@@ -1,6 +1,7 @@
 package com.forever.src;
 
 import com.forever.src.config.AppConfig;
+import com.forever.src.postProcessor.MyBeanFactoryPostProcessor;
 import com.forever.src.service.DemoService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +18,7 @@ public class Test {
         AnnotationConfigApplicationContext annotationConfigApplicationContext =
                 new AnnotationConfigApplicationContext();
         annotationConfigApplicationContext.register(AppConfig.class);
+        annotationConfigApplicationContext.addBeanFactoryPostProcessor(new MyBeanFactoryPostProcessor());
         annotationConfigApplicationContext.refresh();
         DemoService bean = annotationConfigApplicationContext.getBean(DemoService.class);
         bean.say();

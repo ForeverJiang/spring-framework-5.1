@@ -616,7 +616,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
                 // Invoke factory processors registered as beans in the context.
                 // 在上下文中调用注册为bean的工厂处理器。
-                /**
+                /** 重要
                  * 实例化并调用所有已注册的BeanFactoryPostProcessor bean，
                  * 如果给定，则尊重显式顺序。
                  * <p>必须在单例实例化之前调用。
@@ -852,6 +852,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
         beanFactory.registerResolvableDependency(ApplicationContext.class, this);
 
         // Register early post-processor for detecting inner beans as ApplicationListeners.
+        /**
+         * 该BeanPostProcessor检测那些实现了接口ApplicationListener的bean，
+         * 在它们创建时初始化之后，将它们添加到应用上下文的事件多播器上；
+         * 并在这些ApplicationListener bean销毁之前，将它们从应用上下文的事件多播器上移除。
+         */
         beanFactory.addBeanPostProcessor(new ApplicationListenerDetector(this));
 
         // Detect a LoadTimeWeaver and prepare for weaving, if found.
@@ -890,11 +895,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
      * <p>Must be called before singleton instantiation.
      */
     protected void invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory beanFactory) {
+        /**
+         * getBeanFactoryPostProcessors() 它是获取的手动注册（自定义）的BeanFactoryPostProcessor。
+         * 何为手动注册：即未加@Component的、自定义的、实现了BeanFactoryPostProcessor的类（即没有交给Spring管理）
+         *
+         * getBeanFactoryPostProcessors()函数返回了 AbstractApplicationContext 中保存的 beanFactoryPostProcessors
+         */
         PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(beanFactory, getBeanFactoryPostProcessors());
 
         // Detect a LoadTimeWeaver and prepare for weaving, if found in the meantime
         // (e.g. through an @Bean method registered by ConfigurationClassPostProcessor)
-        if (beanFactory.getTempClassLoader() == null && beanFactory.containsBean(LOAD_TIME_WEAVER_BEAN_NAME)) {
+        if (beanFactory.getTempClassLoader() == null && beanFactory.containsBean (LOAD_TIME_WEAVER_BEAN_NAME)) {
             beanFactory.addBeanPostProcessor(new LoadTimeWeaverAwareProcessor(beanFactory));
             beanFactory.setTempClassLoader(new ContextTypeMatchClassLoader(beanFactory.getBeanClassLoader()));
         }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
  * Date: 2019/07/25
  * Time: 11:52
  */
-@Component
+//@Component
 public class DemoService {
     public void say() {
         System.out.println("Hello Spring");
